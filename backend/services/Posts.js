@@ -1,6 +1,6 @@
 const Post = require("../models/Posts");
-const insert = (postData) => {
-  const post = new Post(postData);
+const insert = (data) => {
+  const post = new Post(data);
   return post.save();
 };
 

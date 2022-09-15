@@ -1,7 +1,7 @@
 const express = require("express");
 const config = require("./config");
 const loaders = require("./loaders");
-const { PostRoutes } = require("./routes");
+const { PostRoutes, UserRoutes } = require("./routes");
 
 config();
 loaders();
@@ -12,4 +12,5 @@ app.use(express.json());
 app.listen(process.env.APP_PORT, () => {
   console.log(`Example app listening on port ${process.env.APP_PORT}`);
   app.use("/posts", PostRoutes);
+  app.use("/users", UserRoutes);
 });

@@ -1,0 +1,3 @@
+{"level":"info","message":{"_id":"63207f5c7aecf2122f79631f","createdAt":"2022-09-13T13:02:20.108Z","name":"log test","updatedAt":"2022-09-13T13:02:20.108Z"},"service":"user-service"}
+{"level":"info","message":{"_id":"632323a24fd4c7b013617356","createdAt":"2022-09-15T13:07:46.378Z","name":"araba","updatedAt":"2022-09-15T13:07:46.378Z"},"service":"post-service"}
+{"level":"info","message":{"_id":"632323ae4fd4c7b013617358","createdAt":"2022-09-15T13:07:58.158Z","name":"araba2","updatedAt":"2022-09-15T13:07:58.158Z"},"service":"post-service"}

@@ -18,11 +18,14 @@
   },
   "homepage": "https://github.com/mustafacolakoglu28/selling#readme",
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "http-status": "^1.5.3",
     "joi": "^17.6.0",
-    "mongoose": "^6.6.0"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.6.0",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
