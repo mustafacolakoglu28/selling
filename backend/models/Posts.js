@@ -4,15 +4,14 @@ const logger = require("../scripts/logger/Posts");
 const PostSchema = new mongoose.Schema(
   {
     name: String,
+    image: String,
     // content: String,
     // category: String,
-    // user: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //     autopopulate: true,
-    //   },
-    // ],
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      //autopopulate: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );
