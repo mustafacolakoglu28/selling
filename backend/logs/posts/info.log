@@ -18,3 +18,5 @@
 {"level":"info","message":{"_id":"63239b930fdf82755ad5d424","createdAt":"2022-09-15T21:39:31.370Z","name":"updated","updatedAt":"2022-09-15T22:14:06.215Z","user_id":"63210502fcc720ced23c47d5"},"service":"post-service"}
 {"level":"info","message":{"_id":"63239b930fdf82755ad5d424","createdAt":"2022-09-15T21:39:31.370Z","name":"updated2","updatedAt":"2022-09-15T22:14:39.259Z","user_id":"63210502fcc720ced23c47d5"},"service":"post-service"}
 {"level":"info","message":{"_id":"63289dfbc961041a2b585041","createdAt":"2022-09-19T16:51:07.307Z","name":"postUploadTest","updatedAt":"2022-09-19T16:51:07.307Z","user_id":"63210502fcc720ced23c47d5"},"service":"post-service"}
+{"level":"info","message":{"_id":"632b5d3ef18c998a28cf9706","createdAt":"2022-09-21T18:51:42.348Z","name":"deneme baseService postu","updatedAt":"2022-09-21T18:51:42.348Z","user_id":"632b5cd1f18c998a28cf9702"},"service":"post-service"}
+{"level":"info","message":{"_id":"632b91e26ceea7fa35251faf","createdAt":"2022-09-21T22:36:18.816Z","name":"async post","updatedAt":"2022-09-21T22:36:18.816Z","user_id":"632b8bd8af6187855d50ca3d"},"service":"post-service"}

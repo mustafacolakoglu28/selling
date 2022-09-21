@@ -1,29 +1,6 @@
 const User = require("../models/Users");
-const insert = (data) => {
-  const user = new User(data);
-  return user.save();
-};
+const BaseService = require("./BaseService");
 
-const loginUser = (loginData) => {
-  return User.findOne(loginData);
-};
+class Users extends BaseService {}
 
-const list = () => {
-  return User.find();
-};
-
-const modify = async (where, data) => {
-  return User.findOneAndUpdate(where, data, { new: true });
-};
-
-const remove = (id) => {
-  return User.findByIdAndDelete(id);
-};
-
-module.exports = {
-  insert,
-  list,
-  loginUser,
-  modify,
-  remove,
-};
+module.exports = new Users(User);

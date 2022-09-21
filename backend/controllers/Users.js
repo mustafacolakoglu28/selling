@@ -1,11 +1,5 @@
-const {
-  insert,
-  list,
-  loginUser,
-  modify,
-  remove,
-} = require("../services/Users");
-const postService = require("../services/Posts");
+const Users = require("../services/Users");
+const Posts = require("../services/Posts");
 const uuid = require("uuid");
 const eventEmitter = require("../scripts/events/eventEmitter");
 const httpStatus = require("http-status");
@@ -15,72 +9,70 @@ const {
   generateRefreshToken,
 } = require("../scripts/utils/userPassword");
 
-const create = (req, res) => {
-  req.body.password = passwordToHash(req.body.password);
+class User {
+  async create(req, res, next) {
+    try {
+      req.body.password = passwordToHash(req.body.password);
+      const user = await Users.insert(req.body);
+      res.status(httpStatus.CREATED).send(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-  insert(req.body)
-    .then((response) => {
-      res.status(httpStatus.CREATED).send(response);
-    })
-    .catch((e) => {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
-    });
-};
-
-const login = (req, res) => {
-  req.body.password = passwordToHash(req.body.password);
-  loginUser(req.body)
-    .then((user) => {
+  async login(req, res, next) {
+    try {
+      req.body.password = passwordToHash(req.body.password);
+      const user = await Users.getOne(req.body);
       if (!user)
-        return res
+        res
           .status(httpStatus.NOT_FOUND)
           .send({ message: "boyle bir kullanıcı yok" });
 
-      user = {
+      let currentUser = {
         ...user.toObject(),
         tokens: {
-          acces_token: generateAccessToken(user),
+          access_token: generateAccessToken(user),
           refresh_token: generateRefreshToken(user),
         },
       };
-      delete user.password;
-      res.status(httpStatus.OK).send(user);
-    })
-    .catch((e) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e));
-};
 
-const index = (req, res) => {
-  list()
-    .then((response) => {
-      res.status(httpStatus.OK).send(response);
-    })
-    .catch((e) => {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).send(e);
-    });
-};
+      res.status(httpStatus.OK).send(currentUser);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-const postlist = (req, res) => {
-  postService
-    .list({ user_id: req.user?._id })
-    .then((posts) => {
-      res.status(httpStatus.OK).send(posts);
-    })
-    .catch(() => {
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: "Postlar yüklenirken hata olustu" });
-    });
-};
+  async load(req, res, next) {
+    try {
+      const users = await Users.list();
+      res.status(httpStatus.OK).send(users);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-const resetPassword = (req, res) => {
-  const newPassword = uuid.v4()?.split("-")[0] || `usr-${new Date().getTime()}`;
-  modify({ email: req.body.email }, { password: passwordToHash(newPassword) })
-    .then((updatedUser) => {
+  async postlist(req, res, next) {
+    try {
+      const postsOfUser = await Posts.list({ user_id: req.user?._id });
+      res.status(httpStatus.OK).send(postsOfUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async resetPassword(req, res, next) {
+    try {
+      const newPassword =
+        uuid.v4()?.split("-")[0] || `usr-${new Date().getTime()}`;
+      const updatedUser = await Users.updateOne(
+        { email: req.body.email },
+        { password: passwordToHash(newPassword) }
+      );
       if (!updatedUser)
         return res
           .status(httpStatus.NOT_FOUND)
           .send({ error: "boyle bir kullanici bulunamamaktadir" });
-      console.log(updatedUser);
       eventEmitter.emit("send_email", {
         to: updatedUser.email,
         subject: "sifre sifirlama",
@@ -89,48 +81,38 @@ const resetPassword = (req, res) => {
       res
         .status(httpStatus.OK)
         .send({ message: "epostaniza bilgiler gonderildi" });
-    })
-    .catch(() => {
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: "sifre resetleme sirasinda bir hata olustu" });
-    });
-};
-
-const update = (req, res) => {
-  modify({ _id: req.user?._id }, req.body)
-    .then((updatedUser) => {
-      res.status(httpStatus.OK).send(updatedUser);
-    })
-    .catch(() =>
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: "guncellemede hata olustu" })
-    );
-};
-
-const changePassword = (req, res) => {
-  req.body.password = passwordToHash(req.body.password);
-  modify({ _id: req.user?._id }, req.body)
-    .then((updatedUser) => {
-      res.status(httpStatus.OK).send(updatedUser);
-    })
-    .catch(() =>
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: "guncellemede hata olustu" })
-    );
-};
-
-const deleteUser = (req, res) => {
-  if (!req.params?.id) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .send({ message: "Id bilgisi yok" });
+    } catch (error) {
+      next(error);
+    }
   }
-  remove(req.params?.id)
-    .then((deletedUser) => {
-      console.log("deletedUser :>> ", deletedUser);
+
+  async update(req, res, next) {
+    try {
+      const updatedUser = await Users.update({ _id: req.user?._id }, req.body);
+      res.status(httpStatus.OK).send(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async changePassword(req, res, next) {
+    try {
+      req.body.password = passwordToHash(req.body.password);
+      const updatedUser = await Users.update({ _id: req.user?._id }, req.body);
+      res.status(httpStatus.OK).send(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteUser(req, res, next) {
+    try {
+      if (!req.params?.id) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Id bilgisi yok" });
+      }
+      const deletedUser = await Users.remove(req.params?.id);
       if (!deletedUser) {
         return res
           .status(httpStatus.BAD_REQUEST)
@@ -139,21 +121,10 @@ const deleteUser = (req, res) => {
       res.status(httpStatus.OK).send({
         message: "user silinmistir",
       });
-    })
-    .catch((e) =>
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: "user silme sirasinda bir problem olustu" })
-    );
-};
+    } catch (error) {
+      next(error);
+    }
+  }
+}
 
-module.exports = {
-  create,
-  index,
-  login,
-  postlist,
-  resetPassword,
-  update,
-  deleteUser,
-  changePassword,
-};
+module.exports = new User();

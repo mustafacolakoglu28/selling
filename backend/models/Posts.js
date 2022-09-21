@@ -10,7 +10,6 @@ const PostSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
-      //autopopulate: true,
     },
   },
   { timestamps: true, versionKey: false }
@@ -23,5 +22,4 @@ PostSchema.post("save", (doc) => {
   });
 });
 
-// schema.plugin(require("mongoose-autopopulate"));
 module.exports = mongoose.model("Post", PostSchema);
