@@ -13,7 +13,8 @@ router
 router
   .route("/login")
   .post(validate(schemas.loginValidation), UserController.login);
-router.route("/posts").get(authenticate, UserController.postlist);
+router.route("/my-posts").get(authenticate, UserController.getMyPosts);
+router.route("/my-orders").get(authenticate, UserController.getMyOrders);
 router
   .route("/")
   .patch(

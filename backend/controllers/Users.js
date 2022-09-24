@@ -1,5 +1,6 @@
 const Users = require("../services/Users");
 const Posts = require("../services/Posts");
+const Orders = require("../services/Orders");
 const uuid = require("uuid");
 const eventEmitter = require("../scripts/events/eventEmitter");
 const httpStatus = require("http-status");
@@ -55,7 +56,7 @@ class User {
     }
   }
 
-  async postlist(req, res, next) {
+  async getMyPosts(req, res, next) {
     try {
       const postsOfUser = await Posts.list({ user_id: req.user?._id });
       if (!postsOfUser)
@@ -84,6 +85,15 @@ class User {
     } catch (error) {
       next(error);
     }
+  }
+  async getMyOrders(req, res, next) {
+    const myOrders = await Orders.list({ user_id: req.user?._id });
+    console.log("myOrders :>> ", myOrders);
+    if (!myOrders) throw new ApiError("Orders not found", httpStatus.NOT_FOUND);
+    res.status(httpStatus.OK).send(myOrders);
+  }
+  catch(error) {
+    next(error);
   }
 
   async update(req, res, next) {

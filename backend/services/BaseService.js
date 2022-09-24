@@ -1,3 +1,6 @@
+const httpStatus = require("http-status");
+const ApiError = require("../errors/ApiError");
+
 class BaseService {
   constructor(model) {
     this.model = model;
@@ -15,7 +18,7 @@ class BaseService {
     try {
       return await this.model.find(where);
     } catch (error) {
-      throw new error(error);
+      throw new ApiError("can not load", httpStatus.NOT_FOUND);
     }
   }
 
@@ -32,6 +35,14 @@ class BaseService {
       return await this.model.findByIdAndDelete(id);
     } catch (error) {
       throw new error(error);
+    }
+  }
+
+  async get(id) {
+    try {
+      return await this.model.findById(id);
+    } catch (error) {
+      throw new ApiError("something went wrong", httpStatus.NOT_FOUND);
     }
   }
 
